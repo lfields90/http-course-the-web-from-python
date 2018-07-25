@@ -17,6 +17,14 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 
+html_form = '''<!DOCTYPE html>
+  <title>Message Board</title>
+  <form method="POST" action="http://localhost:8000/">
+    <textarea name="message"></textarea>
+    <br>
+    <button type="submit">Post it!</button>
+  </form>
+'''
 
 class MessageHandler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -34,6 +42,17 @@ class MessageHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/plain; charset=utf-8')
         self.end_headers()
         self.wfile.write(message.encode())
+
+    def do_GET(self):
+        # Send the 200 OK reponse
+        self.send_response(200)
+
+        #Then send headers
+        self.send_header('Content-type', 'text/plain; charset=utf-8')
+        self.end_headers()
+
+        # Then encode and send the form.
+        self.wfile.write(html_form.encode())
 
 if __name__ == '__main__':
     server_address = ('', 8000)
